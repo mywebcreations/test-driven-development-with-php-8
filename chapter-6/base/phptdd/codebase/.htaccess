@@ -1,8 +1,13 @@
-DirectoryIndex symfony/public/index.php
+# Enable the RewriteEngine
 RewriteEngine On
+
+# Set the base directory for rewrites
 RewriteBase /symfony/
 
-RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]
-RewriteRule ^ %1 [L,NE,R=302]
+# Redirect direct access to /public/* to the corresponding resource without 'public/' in the URL
+RewriteCond %{REQUEST_URI} ^/symfony/public/ [NC]
+RewriteRule ^public/(.*)$ /symfony/$1 [L,NE,R=302]
 
-RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
+# Route all other requests to the Symfony front controller
+RewriteCond %{REQUEST_URI} !^/symfony/public/ [NC]
+RewriteRule ^(.*)$ /symfony/public/$1 [L]
